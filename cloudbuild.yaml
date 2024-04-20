@@ -1,0 +1,21 @@
+steps:
+  # Step 1: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/soy-sound-420801/lstm', '.']
+
+  # Step 2: Push the image to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/soy-sound-420801/lstm']
+
+  # Step 3: Deploy the image to Google Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: ['run', 'deploy', 'forecasting', 
+           '--image', 'gcr.io/soy-sound-420801/lstm', 
+           '--region', 'us-central1', 
+           '--platform', 'managed', 
+           '--allow-unauthenticated']
+
+# Images to be stored in Container Registry
+images:
+  - 'gcr.io/soy-sound-420801/lstm'
